@@ -1,0 +1,4 @@
+build.ps1
+.vscode/launch.json
+dist/**
+*.out
