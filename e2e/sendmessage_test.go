@@ -37,8 +37,9 @@ func TestSendAndReceiveMessage(t *testing.T) {
 	// end set up
 
 	// encrpyt the message
-	testMessage := client.MakeClientMessage("ROOT", "MEP", "Hello!")
-	rootPubKey := client1.FetchPublicKeyByUserID("ROOT")
+	messageText := "Hello!"
+	testMessage := client.MakeClientMessage(client2.Principal.Username, client1.Principal.Username, messageText)
+	rootPubKey := client1.FetchPublicKeyByUserID(client2.Principal.Username)
 
 	err := client1.SendEncryptedMessage(testMessage, &rootPubKey)
 	if err != nil {
@@ -46,22 +47,22 @@ func TestSendAndReceiveMessage(t *testing.T) {
 		t.Log(err)
 		t.FailNow()
 	}
-	msgs, err := client2.GetMessages("ROOT")
+	msgs, err := client2.GetMessages(client2.Principal.Username)
 	if err != nil {
 		t.Log("error while retrieving ROOT messages")
 		t.Log(err)
 		t.FailNow()
 	}
-	if msgs[0].Content != "Hello!" {
-		t.Logf("value %s does not match expected %s", msgs[0].Content, "Hello!")
+	if msgs[0].Content != messageText {
+		t.Logf("value %s does not match expected %s", msgs[0].Content, messageText)
 		t.Fail()
 	}
-	if msgs[0].To != "ROOT" {
-		t.Logf("to %s does not match user %s", msgs[0].To, "ROOT")
+	if msgs[0].To != client2.Principal.Username {
+		t.Logf("to %s does not match user %s", msgs[0].To, client2.Principal.Username)
 		t.Fail()
 	}
-	if msgs[0].From != "MEP" {
-		t.Logf("to %s does not match user %s", msgs[0].To, "ROOT")
+	if msgs[0].From != client1.Principal.Username {
+		t.Logf("to %s does not match user %s", msgs[0].To, client1.Principal.Username)
 		t.Fail()
 	}
 
