@@ -44,7 +44,7 @@ func (store *MemoryMessageStore) Add(message Message) error {
 }
 
 func (store *MemoryMessageStore) DeleteByID(messageID MessageID) error {
-	if _, ok := store.messages[messageID]; ok {
+	if _, ok := store.messages[messageID]; !ok {
 		return ErrKeyDoesNotExist{
 			key: string(messageID),
 		}
